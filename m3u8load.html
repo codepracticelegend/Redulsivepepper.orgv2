@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Load M3u8 Files!">
+    <title>M3U8 Loader</title>
+    <link href="https://vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .home {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .home button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .home button:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .container label {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .container button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .container button:hover {
+            background-color: #218838;
+        }
+        #video-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #video-popup .popup-content {
+            background-color: white;
+            padding: 0;
+            border-radius: 10px;
+            position: relative;
+            width: 90%;
+            max-width: 720px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        #video-popup .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1001;
+        }
+        #video-popup .close:hover {
+            background-color: #c82333;
+        }
+        #video-player-container {
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+            background-color: black;
+        }
+        .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="home">
+        <button onclick="home()">Home</button>
+    </div>
+    <div class="container">
+        <label for="m3u8-url">Enter M3U8 URL:</label>
+        <input type="text" id="m3u8-url" placeholder="Enter the URL here">
+        <button onclick="loadVideo()">Load</button>
+    </div>
+    
+    <div id="video-popup">
+        <div class="popup-content">
+            <button class="close" onclick="closePopup()">Close</button>
+            <div id="video-player-container">
+                <video id="video-player" class="video-js vjs-default-skin" controls></video>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-http-streaming@2.0.0/dist/videojs-http-streaming.js"></script>
+    <script>
+        function loadVideo() {
+            const m3u8Url = document.getElementById('m3u8-url').value;
+            const videoPlayer = videojs('video-player');
+            videoPlayer.src({
+                src: m3u8Url,
+                type: 'application/x-mpegURL'
+            });
+            videoPlayer.play();
+            document.getElementById('video-popup').style.display = 'flex';
+
+            videoPlayer.on('error', function() {
+                console.error('Error occurred:', videoPlayer.error());
+                alert('An error occurred while loading the video. Please check the console for details.');
+            });
+        }
+
+        function closePopup() {
+            document.getElementById('video-popup').style.display = 'none';
+            const videoPlayer = videojs('video-player');
+            videoPlayer.pause();
+            videoPlayer.src('');
+        }
+
+        function home() {
+            window.location = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            videojs('video-player'); // Initialize the video player on page load
+        });
+    </script>
+</body>
+</html>
